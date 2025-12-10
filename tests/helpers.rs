@@ -173,6 +173,7 @@ impl TestDatabase {
         )
         .await
         .expect("Failed to add job")
+        .expect("Job should be created")
     }
 
     pub fn worker_utils(&self) -> WorkerUtils {
@@ -193,7 +194,8 @@ impl TestDatabase {
                 },
             )
             .await
-            .expect("Failed to add job");
+            .expect("Failed to add job")
+            .expect("Job should be created");
         let regular_job_1 = utils
             .add_raw_job(
                 "job3",
@@ -204,7 +206,8 @@ impl TestDatabase {
                 },
             )
             .await
-            .expect("Failed to add job");
+            .expect("Failed to add job")
+            .expect("Job should be created");
         let locked_job = utils
             .add_raw_job(
                 "job3",
@@ -215,7 +218,8 @@ impl TestDatabase {
                 },
             )
             .await
-            .expect("Failed to add job");
+            .expect("Failed to add job")
+            .expect("Job should be created");
         let regular_job_2 = utils
             .add_raw_job(
                 "job3",
@@ -226,7 +230,8 @@ impl TestDatabase {
                 },
             )
             .await
-            .expect("Failed to add job");
+            .expect("Failed to add job")
+            .expect("Job should be created");
         let untouched_job = utils
             .add_raw_job(
                 "job3",
@@ -237,7 +242,8 @@ impl TestDatabase {
                 },
             )
             .await
-            .expect("Failed to add job");
+            .expect("Failed to add job")
+            .expect("Job should be created");
 
         let locked_job = {
             let locked_job_update: DbJob = query_as("update graphile_worker._private_jobs as jobs set locked_by = 'test', locked_at = now() where id = $1 returning *")

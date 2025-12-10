@@ -19,7 +19,7 @@ pub trait WorkerContextExt {
         &self,
         payload: T,
         spec: JobSpec,
-    ) -> impl core::future::Future<Output = Result<Job, GraphileWorkerError>> + Send;
+    ) -> impl core::future::Future<Output = Result<Option<Job>, GraphileWorkerError>> + Send;
 
     /// Add a raw job by identifier from within a task handler.
     fn add_raw_job<P: Serialize + Send + 'static>(
@@ -27,7 +27,7 @@ pub trait WorkerContextExt {
         identifier: &str,
         payload: P,
         spec: JobSpec,
-    ) -> impl core::future::Future<Output = Result<Job, GraphileWorkerError>> + Send;
+    ) -> impl core::future::Future<Output = Result<Option<Job>, GraphileWorkerError>> + Send;
 
     /// Remove a job by job key.
     fn remove_job(
@@ -80,7 +80,7 @@ impl WorkerContextExt for WorkerContext {
         &self,
         payload: T,
         spec: JobSpec,
-    ) -> Result<Job, GraphileWorkerError> {
+    ) -> Result<Option<Job>, GraphileWorkerError> {
         self.utils().add_job(payload, spec).await
     }
 
@@ -89,7 +89,7 @@ impl WorkerContextExt for WorkerContext {
         identifier: &str,
         payload: P,
         spec: JobSpec,
-    ) -> Result<Job, GraphileWorkerError> {
+    ) -> Result<Option<Job>, GraphileWorkerError> {
         self.utils().add_raw_job(identifier, payload, spec).await
     }
 

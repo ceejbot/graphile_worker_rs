@@ -228,7 +228,7 @@ impl WorkerUtils {
         &self,
         payload: T,
         spec: JobSpec,
-    ) -> Result<Job, GraphileWorkerError> {
+    ) -> Result<Option<Job>, GraphileWorkerError> {
         let identifier = T::IDENTIFIER;
         let payload = serde_json::to_value(payload)?;
         let payload = self
@@ -277,7 +277,7 @@ impl WorkerUtils {
         identifier: &str,
         payload: P,
         spec: JobSpec,
-    ) -> Result<Job, GraphileWorkerError>
+    ) -> Result<Option<Job>, GraphileWorkerError>
     where
         P: Serialize,
     {

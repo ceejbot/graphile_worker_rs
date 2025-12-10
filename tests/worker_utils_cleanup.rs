@@ -88,7 +88,8 @@ async fn cleanup_with_gc_job_queues() {
                     },
                 )
                 .await
-                .expect("Failed to add job");
+                .expect("Failed to add job")
+                .expect("Job should be created");
             jobs.push(job.clone());
 
             // Lock job using the large SQL query
@@ -170,7 +171,8 @@ async fn cleanup_with_gc_task_identifiers() {
             let job = worker_utils
                 .add_raw_job(task_identifier, serde_json::json!({}), JobSpec::default())
                 .await
-                .expect("Failed to add job");
+                .expect("Failed to add job")
+                .expect("Job should be created");
 
             if *task_identifier == "test_job2" {
                 completed_job_id = Some(*job.id());

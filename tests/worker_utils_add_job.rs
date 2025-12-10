@@ -183,7 +183,8 @@ async fn supports_the_job_key_api_with_job_key_mode() {
                 },
             )
             .await
-            .expect("Failed to add job in replace mode");
+            .expect("Failed to add job in replace mode")
+            .expect("Job should be created");
         assert_eq!(j1.revision(), &0, "First job revision should be 0");
         assert_eq!(
             j1.run_at(),
@@ -204,7 +205,8 @@ async fn supports_the_job_key_api_with_job_key_mode() {
                 },
             )
             .await
-            .expect("Failed to add job in preserve_run_at mode");
+            .expect("Failed to add job in preserve_run_at mode")
+            .expect("Job should be created");
         assert_eq!(j2.revision(), &1, "Second job revision should be 1");
         assert_eq!(
             j2.run_at(),
@@ -225,7 +227,8 @@ async fn supports_the_job_key_api_with_job_key_mode() {
                 },
             )
             .await
-            .expect("Failed to add job in unsafe_dedupe mode");
+            .expect("Failed to add job in unsafe_dedupe mode")
+            .expect("Job should be created");
         assert_eq!(j3.revision(), &2, "Third job revision should be 2");
         assert_eq!(
             j3.run_at(),
@@ -246,7 +249,8 @@ async fn supports_the_job_key_api_with_job_key_mode() {
                 },
             )
             .await
-            .expect("Failed to replace job");
+            .expect("Failed to replace job")
+            .expect("Job should be created");
         assert_eq!(j4.revision(), &3, "Final job revision should be 3");
         assert_eq!(
             j4.run_at(),

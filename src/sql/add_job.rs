@@ -11,7 +11,7 @@ pub async fn add_job(
     identifier: &str,
     payload: serde_json::Value,
     spec: JobSpec,
-) -> Result<Job, GraphileWorkerError> {
+) -> Result<Option<Job>, GraphileWorkerError> {
     let sql = formatdoc!(
         r#"
             select * from {escaped_schema}.add_job(
@@ -30,7 +30,7 @@ pub async fn add_job(
 
     let job_key_mode = spec.job_key_mode().clone().map(|jkm| jkm.to_string());
 
-    let job = query_as(&sql)
+    let db_job = query_as(&sql)
         .bind(identifier)
         .bind(&payload)
         .bind(spec.queue_name())
@@ -40,14 +40,22 @@ pub async fn add_job(
         .bind(spec.priority())
         .bind(spec.flags())
         .bind(job_key_mode)
-        .fetch_one(executor)
+        .fetch_optional(executor)
         .await?;
 
-    info!(
-        identifier,
-        payload = ?payload,
-        "Job added to queue"
-    );
-
-    Ok(Job::from_db_job(job, identifier.to_string()))
+    if let Some(job) = db_job {
+        info!(
+            identifier,
+            payload = ?payload,
+            "Job added to queue"
+        );
+        Ok(Some(Job::from_db_job(job, identifier.to_string())))
+    } else {
+        info!(
+            identifier,
+            job_key = ?spec.job_key(),
+            "Job not added - likely locked with same job_key"
+        );
+        Ok(None)
+    }
 }

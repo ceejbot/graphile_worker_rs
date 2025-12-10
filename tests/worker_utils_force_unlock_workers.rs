@@ -44,7 +44,8 @@ async fn unlocks_jobs_for_given_workers_leaves_others_unaffected() {
                     },
                 )
                 .await
-                .expect("Failed to add job");
+                .expect("Failed to add job")
+                .expect("Job should be created");
 
             // Lock job
             let lock_job_sql = format!(
